@@ -1,0 +1,3 @@
+[submodule ".themes/mth-theme"]
+	path = .themes/mth-theme
+	url = git@github.com:maketestingharder/mth-theme.git
