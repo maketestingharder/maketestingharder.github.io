@@ -1,4 +1,0 @@
-User-agent: *
-Disallow: 
-
-Sitemap: http://maketestingharder.github.io/sitemap.xml 
