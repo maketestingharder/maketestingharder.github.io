@@ -4,4 +4,7 @@ language: ruby
 rvm:
   - 2.0.0
   - 1.9.3
-script: bundle exec rake install['mth-theme']; bundle exec rake generate
+script: "./build.sh" # execute this script on each commit
+branches:
+  only:
+  - source
