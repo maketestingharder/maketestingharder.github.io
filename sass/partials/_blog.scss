@@ -6,7 +6,7 @@ article {
     padding-top: 2em;
     padding-bottom: 1em;
     margin-bottom: 1em;
-    background: $img-border bottom left repeat-x;
+    border-top: 1px solid $text-color;
     h1 {
       margin: 0;
       a { text-decoration: none;
@@ -25,7 +25,7 @@ article {
     @media only screen and (min-width: 768px) {
       margin-bottom: 1.5em;
       padding-bottom: 1em;
-      background: $img-border bottom left repeat-x;
+      border-bottom: 1px solid $text-color;
     }
   }
   h2 {
@@ -126,7 +126,7 @@ article + article {
   text-align: center;
   font-size: .95em;
   position: relative;
-  background: $img-border top left repeat-x;
+  border-top: 1px solid $text-color;
   padding: {top: 1.5em; bottom: 1.5em;}
   a {
     text-decoration: none;

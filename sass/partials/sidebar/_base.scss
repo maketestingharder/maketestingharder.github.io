@@ -3,8 +3,7 @@
 }
 aside.sidebar {
   overflow: hidden;
-  color: $sidebar-color;
-  text-shadow: lighten($sidebar-bg, 8) 0 1px;
+  color: $text-color;
   a { @extend .force-wrap; }
   section {
     @extend .sans;
@@ -77,7 +76,7 @@ aside.sidebar {
       padding-bottom: .15em;
       @include border-bottom-right-radius(.3em);
       text-align: center;
-      background: $main-bg $noise-bg;
+      background: $main-bg;
       border-bottom: 1px solid $sidebar-border;
       border-right: 1px solid $sidebar-border;
       content: "\00BB";
