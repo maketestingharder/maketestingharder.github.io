@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Glassfish | Make Testing Harder]]></title>
+  <link href="http://maketestingharder.github.io/blog/categories/glassfish/atom.xml" rel="self"/>
+  <link href="http://maketestingharder.github.io/"/>
+  <updated>2015-05-26T22:31:05+02:00</updated>
+  <id>http://maketestingharder.github.io/</id>
+  <author>
+    <name><![CDATA[Make Testing Harder]]></name>
+    <email><![CDATA[maketestingharder@gmail.com]]></email>
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Testing Without Test Environment]]></title>
+    <link href="http://maketestingharder.github.io/blog/2014/06/17/testing-without-test-environment/"/>
+    <updated>2014-06-17T21:42:07+02:00</updated>
+    <id>http://maketestingharder.github.io/blog/2014/06/17/testing-without-test-environment</id>
+    <content type="html"><![CDATA[<p>It&rsquo;s always a problem&hellip; you develop a code, write unit tests, you build your project locally so unit tests can give you a quick feedback. What do you do if you need to test a web-app? You build it, run unit tests, everything seems to work fine, CI server builds your code, run tests and everything is ok&hellip; until you deploy your war/ear file into application server. Then it turns out it does not deploy, and your head blows, s<strong><em>* and f</em></strong> are flying around&hellip;</p>
+
+<!-- more -->
+
+
+<p>Wouldn&rsquo;t it be nice if you wouldn&rsquo;t have to wait for whole CI/CD pipeline or manual deploy to be notified that your app can&rsquo;t be deployed or you can&rsquo;t communicate with it due to incorrect dependencies.</p>
+
+<p>Turns out it&rsquo;s quite easy to do it. All you have to do is use embedded application server. I&rsquo;ll show you how to pick one, and set it according to your needs.</p>
+
+<p>It always comes down to five phases/steps tightly coupled to maven life cycle.</p>
+
+<p>There are few different maven plugins that can help you with it.</p>
+
+<pre><code class="xml">&lt;plugin&gt;
+    &lt;groupId&gt;org.eclipse.jetty&lt;/groupId&gt;
+    &lt;artifactId&gt;jetty-maven-plugin&lt;/artifactId&gt;
+    &lt;version&gt;9.0.0.M4&lt;/version&gt;
+&lt;/plugin&gt;
+</code></pre>
+
+<pre><code class="xml">&lt;plugin&gt;
+    &lt;groupId&gt;org.glassfish&lt;/groupId&gt;
+    &lt;artifactId&gt;maven-embedded-glassfish-plugin&lt;/artifactId&gt;
+    &lt;version&gt;3.1.1&lt;/version&gt;
+&lt;/plugin&gt;
+</code></pre>
+
+<pre><code class="xml">&lt;plugin&gt;
+    &lt;groupId&gt;org.apache.tomcat.maven&lt;/groupId&gt;
+    &lt;artifactId&gt;tomcat7-maven-plugin&lt;/artifactId&gt;
+    &lt;version&gt;2.0&lt;/version&gt;
+&lt;/plugin&gt;
+</code></pre>
+
+<p>First one - Jetty - seems to be the most lightweight solution, if you don&rsquo;t use JMX (maybe there is a way to turn it on and configure it, but I wasn&rsquo;t able to figure it out) this one is for you. Setup is quick, easy and what&rsquo;s most important it does not take much time to set it up, run tests, tear down and get a report.</p>
+
+<p>How to do this&hellip; will come next week. Stay tuned.</p>
+]]></content>
+  </entry>
+  
+</feed>

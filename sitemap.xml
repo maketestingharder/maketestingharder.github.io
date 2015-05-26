@@ -1,6 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>http://maketestingharder.github.io/blog/2014/07/10/testing-without-test-environment-jetty/</loc>
+    <lastmod>2014-07-10T21:44:39+02:00</lastmod>
+  </url>
+  <url>
+    <loc>http://maketestingharder.github.io/blog/2014/06/17/testing-without-test-environment/</loc>
+    <lastmod>2014-06-17T21:42:07+02:00</lastmod>
+  </url>
+  <url>
+    <loc>http://maketestingharder.github.io/blog/2013/12/09/state-of-testing/</loc>
+    <lastmod>2013-12-09T20:39:05+01:00</lastmod>
+  </url>
+  <url>
+    <loc>http://maketestingharder.github.io/blog/2013/12/07/framework-hell-number-2/</loc>
+    <lastmod>2013-12-07T20:34:51+01:00</lastmod>
+  </url>
+  <url>
+    <loc>http://maketestingharder.github.io/blog/2013/12/01/framework-hell-number-1-dot-6/</loc>
+    <lastmod>2013-12-01T20:29:00+01:00</lastmod>
+  </url>
+  <url>
+    <loc>http://maketestingharder.github.io/blog/2013/11/20/framework-hell-number-1-dot-5/</loc>
+    <lastmod>2013-11-20T19:56:55+01:00</lastmod>
+  </url>
+  <url>
+    <loc>http://maketestingharder.github.io/blog/2013/10/29/framework-hell/</loc>
+    <lastmod>2013-10-29T19:04:26+01:00</lastmod>
+  </url>
+  <url>
     <loc>http://maketestingharder.github.io/blog/archive/</loc>
   </url>
   <url>
@@ -8,5 +36,56 @@
   </url>
   <url>
     <loc>http://maketestingharder.github.io/</loc>
+  </url>
+  <url>
+    <loc>http://maketestingharder.github.io/blog/categories/groovy/</loc>
+  </url>
+  <url>
+    <loc>http://maketestingharder.github.io/blog/categories/java/</loc>
+  </url>
+  <url>
+    <loc>http://maketestingharder.github.io/blog/categories/junit/</loc>
+  </url>
+  <url>
+    <loc>http://maketestingharder.github.io/blog/categories/maven/</loc>
+  </url>
+  <url>
+    <loc>http://maketestingharder.github.io/blog/categories/pom/</loc>
+  </url>
+  <url>
+    <loc>http://maketestingharder.github.io/blog/categories/spock/</loc>
+  </url>
+  <url>
+    <loc>http://maketestingharder.github.io/blog/categories/surefire/</loc>
+  </url>
+  <url>
+    <loc>http://maketestingharder.github.io/blog/categories/testng/</loc>
+  </url>
+  <url>
+    <loc>http://maketestingharder.github.io/blog/categories/tutorial/</loc>
+  </url>
+  <url>
+    <loc>http://maketestingharder.github.io/blog/categories/cucumber/</loc>
+  </url>
+  <url>
+    <loc>http://maketestingharder.github.io/blog/categories/jbehave/</loc>
+  </url>
+  <url>
+    <loc>http://maketestingharder.github.io/blog/categories/it-tests/</loc>
+  </url>
+  <url>
+    <loc>http://maketestingharder.github.io/blog/categories/unit-tests/</loc>
+  </url>
+  <url>
+    <loc>http://maketestingharder.github.io/blog/categories/github/</loc>
+  </url>
+  <url>
+    <loc>http://maketestingharder.github.io/blog/categories/glassfish/</loc>
+  </url>
+  <url>
+    <loc>http://maketestingharder.github.io/blog/categories/jetty/</loc>
+  </url>
+  <url>
+    <loc>http://maketestingharder.github.io/blog/categories/tomcat/</loc>
   </url>
 </urlset>

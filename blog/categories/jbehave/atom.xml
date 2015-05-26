@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Jbehave | Make Testing Harder]]></title>
+  <link href="http://maketestingharder.github.io/blog/categories/jbehave/atom.xml" rel="self"/>
+  <link href="http://maketestingharder.github.io/"/>
+  <updated>2015-05-26T22:31:05+02:00</updated>
+  <id>http://maketestingharder.github.io/</id>
+  <author>
+    <name><![CDATA[Make Testing Harder]]></name>
+    <email><![CDATA[maketestingharder@gmail.com]]></email>
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Framework Hell #1.6]]></title>
+    <link href="http://maketestingharder.github.io/blog/2013/12/01/framework-hell-number-1-dot-6/"/>
+    <updated>2013-12-01T20:29:00+01:00</updated>
+    <id>http://maketestingharder.github.io/blog/2013/12/01/framework-hell-number-1-dot-6</id>
+    <content type="html"><![CDATA[<p>As I promised this post will show basic, maybe not simplest but definitely most effective setup of both Cucumber and JBehave, which you can in most cases copy-paste into your project.</p>
+
+<!-- more -->
+
+
+<p>Project structure was published in last post.
+Now for class implementation.</p>
+
+<p>Cucumber first.
+This is the simplest ever setup. Of course it won&rsquo;t be the simplest one, required to run Cucumber, but this one allows you to define which steps file can be used with desired feature file.</p>
+
+<pre><code class="java">package cucumber.unit;
+
+import cucumber.junit.Cucumber;
+import org.junit.runner.RunWith;
+
+@RunWith(Cucumber.class)
+@Cucumber.Options(
+        features={"src/test/resources/cucumber/unit/UnitTests.feature"},
+        glue="cucumber.unit.steps")
+public class CucumberUnitTest {
+}
+</code></pre>
+
+<p>And now few words of explanation:</p>
+
+<pre><code class="java">@RunWith(Cucumber.class)
+</code></pre>
+
+<p>tells JUnit which class should be used to run Cucumber tests, so it&rsquo;s mandatory</p>
+
+<pre><code class="java">features={"src/test/resources/cucumber/unit/UnitTests.feature"}
+</code></pre>
+
+<p>tells Cucumber where features are located, I&rsquo;m precisely pointing file, but location is also fine</p>
+
+<pre><code class="java">glue="cucumber.unit.steps"
+</code></pre>
+
+<p>tells Cucumber where to look for classes with steps definitions/implementation</p>
+
+<pre><code class="java">@Cucumber.Options()
+</code></pre>
+
+<p>tells Cucumber how it should behave, what should it do before tests, during them, and after. You can specify how report should look like, and more. In minimal setup you don&rsquo;t need this annotation at all.</p>
+
+<p>With JBehave it&rsquo;s a bit more code.</p>
+
+<pre><code class="java">@RunWith(JUnitReportingRunner.class)
+public class JBehaveUnitTest extends JUnitStories {
+    private Configuration configuration;
+    public JBehaveUnitTest() {
+        super();
+        configuration = new Configuration() {
+        };
+
+        configuration.useFailureStrategy(new RethrowingFailure());
+        configuration.useKeywords( new LocalizedKeywords( Locale.ENGLISH ) );
+        configuration.usePathCalculator( new AbsolutePathCalculator() );
+        configuration.useParameterControls( new ParameterControls() );
+        configuration.useParameterConverters( new ParameterConverters() );
+        configuration.useParanamer( new NullParanamer() );
+        configuration.usePendingStepStrategy( new PassingUponPendingStep() );
+        configuration.useStepCollector(new MarkUnmatchedStepsAsPending());
+        configuration.useStepdocReporter(new PrintStreamStepdocReporter());
+        configuration.useStepFinder(new StepFinder());
+        configuration.useStepMonitor(new SilentStepMonitor());
+        configuration
+                .useStepPatternParser(new RegexPrefixCapturingPatternParser());
+        configuration.useStoryControls(new StoryControls());
+        configuration.useStoryLoader(new LoadFromClasspath());
+        configuration.useStoryParser(new RegexStoryParser(configuration
+                .keywords()));
+        configuration.useStoryPathResolver(new UnderscoredCamelCaseResolver());
+        configuration.useStoryReporterBuilder(new StoryReporterBuilder());
+        configuration.useViewGenerator(new FreemarkerViewGenerator());
+
+        EmbedderControls embedderControls = configuredEmbedder()
+                .embedderControls();
+        embedderControls.doBatch(false);
+        embedderControls.doGenerateViewAfterStories(false);
+        embedderControls.doIgnoreFailureInStories(false);
+        embedderControls.doIgnoreFailureInView(false);
+        embedderControls.doSkip(false);
+        embedderControls.doVerboseFailures(false);
+        embedderControls.doVerboseFiltering(false);
+        embedderControls.useStoryTimeoutInSecs(300);
+        embedderControls.useThreads(1);
+    }
+
+    @Override
+    public Configuration configuration() {
+        return configuration;
+    }
+
+    @Override
+    public InjectableStepsFactory stepsFactory() {
+        return new InstanceStepsFactory(configuration(), new JBehaveUnitTestSteps());
+    }
+    @Override
+    protected List&lt;string&gt; storyPaths() {
+        return Arrays.asList( "jbehave/UnitTests.story" );
+    }
+}&lt;/string&gt;
+</code></pre>
+
+<p>Again few words of explanation (I&rsquo;ve skipped 99,9% of lines&hellip;):</p>
+
+<pre><code class="java">@RunWith(JUnitReportingRunner.class)
+</code></pre>
+
+<p>tells JUnit which class should be used to run JBehave tests, so it&rsquo;s mandatory</p>
+
+<pre><code class="java">@Override
+protected List&lt;string&gt; storyPaths() {
+    return Arrays.asList( "jbehave/UnitTests.story" );
+}&lt;/string&gt;
+</code></pre>
+
+<p>tells JBehave which story files should be used in this test phase.</p>
+
+<p>And that&rsquo;s basically all for Cucumber and JBehave setup. Sure there is still some customization within pom.xml file&hellip; but this will come&hellip; hopefully soon.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Framework Hell #1.5]]></title>
+    <link href="http://maketestingharder.github.io/blog/2013/11/20/framework-hell-number-1-dot-5/"/>
+    <updated>2013-11-20T19:56:55+01:00</updated>
+    <id>http://maketestingharder.github.io/blog/2013/11/20/framework-hell-number-1-dot-5</id>
+    <content type="html"><![CDATA[<p>Next post was supposed to be about pom.xml details&hellip; but it won&rsquo;t.
+Since I used Spock for Groovy tests why should&rsquo;t I also include Cucumber and JBehave</p>
+
+<p>So today I&rsquo;m going to fix this omission.</p>
+
+<!-- more -->
+
+
+<p>First let&rsquo;s add dependencies to pom file.</p>
+
+<pre><code class="xml">&lt;dependency&gt;
+    &lt;groupId&gt;org.jbehave&lt;/groupId&gt;
+    &lt;artifactId&gt;jbehave-core&lt;/artifactId&gt;
+    &lt;version&gt;3.8&lt;/version&gt;
+    &lt;scope&gt;test&lt;/scope&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;info.cukes&lt;/groupId&gt;
+    &lt;artifactId&gt;cucumber-core&lt;/artifactId&gt;
+    &lt;version&gt;1.0.10&lt;/version&gt;
+    &lt;scope&gt;test&lt;/scope&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;info.cukes&lt;/groupId&gt;
+    &lt;artifactId&gt;cucumber-java&lt;/artifactId&gt;
+    &lt;version&gt;1.0.10&lt;/version&gt;
+    &lt;scope&gt;test&lt;/scope&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;info.cukes&lt;/groupId&gt;
+    &lt;artifactId&gt;cucumber-junit&lt;/artifactId&gt;
+    &lt;version&gt;1.0.10&lt;/version&gt;
+    &lt;scope&gt;test&lt;/scope&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;info.cukes&lt;/groupId&gt;
+    &lt;artifactId&gt;cucumber-html&lt;/artifactId&gt;
+    &lt;version&gt;0.2.2&lt;/version&gt;
+    &lt;scope&gt;test&lt;/scope&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;de.codecentric&lt;/groupId&gt;
+    &lt;artifactId&gt;jbehave-junit-runner&lt;/artifactId&gt;
+    &lt;version&gt;1.0.2&lt;/version&gt;
+&lt;/dependency&gt;
+</code></pre>
+
+<p>Now freaked file/folder structure with names that assure we&rsquo;ll trigger tests when needed.</p>
+
+<p><img src="/blog/images/folder_structure.png"></p>
+
+<p>You may ask why cucumber folder structure is such a mess.
+It&rsquo;s because this was the only way I was able to force Cucumber to use Unit Test Steps with Unit Tests and Integration Test Steps with IT Tests. This solutions allows you to have same steps with different implementation for Unit Tests and different for IT Tests.</p>
+
+<p>Class implementation details will be a part of next post (Yep&hellip; before pom.xml post).</p>
+
+<p>Impatient readers can take a look at GitHub&hellip;</p>
+]]></content>
+  </entry>
+  
+</feed>

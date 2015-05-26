@@ -1,0 +1,386 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Testng | Make Testing Harder]]></title>
+  <link href="http://maketestingharder.github.io/blog/categories/testng/atom.xml" rel="self"/>
+  <link href="http://maketestingharder.github.io/"/>
+  <updated>2015-05-26T22:31:05+02:00</updated>
+  <id>http://maketestingharder.github.io/</id>
+  <author>
+    <name><![CDATA[Make Testing Harder]]></name>
+    <email><![CDATA[maketestingharder@gmail.com]]></email>
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Testing Without Test Environment]]></title>
+    <link href="http://maketestingharder.github.io/blog/2014/06/17/testing-without-test-environment/"/>
+    <updated>2014-06-17T21:42:07+02:00</updated>
+    <id>http://maketestingharder.github.io/blog/2014/06/17/testing-without-test-environment</id>
+    <content type="html"><![CDATA[<p>It&rsquo;s always a problem&hellip; you develop a code, write unit tests, you build your project locally so unit tests can give you a quick feedback. What do you do if you need to test a web-app? You build it, run unit tests, everything seems to work fine, CI server builds your code, run tests and everything is ok&hellip; until you deploy your war/ear file into application server. Then it turns out it does not deploy, and your head blows, s<strong><em>* and f</em></strong> are flying around&hellip;</p>
+
+<!-- more -->
+
+
+<p>Wouldn&rsquo;t it be nice if you wouldn&rsquo;t have to wait for whole CI/CD pipeline or manual deploy to be notified that your app can&rsquo;t be deployed or you can&rsquo;t communicate with it due to incorrect dependencies.</p>
+
+<p>Turns out it&rsquo;s quite easy to do it. All you have to do is use embedded application server. I&rsquo;ll show you how to pick one, and set it according to your needs.</p>
+
+<p>It always comes down to five phases/steps tightly coupled to maven life cycle.</p>
+
+<p>There are few different maven plugins that can help you with it.</p>
+
+<pre><code class="xml">&lt;plugin&gt;
+    &lt;groupId&gt;org.eclipse.jetty&lt;/groupId&gt;
+    &lt;artifactId&gt;jetty-maven-plugin&lt;/artifactId&gt;
+    &lt;version&gt;9.0.0.M4&lt;/version&gt;
+&lt;/plugin&gt;
+</code></pre>
+
+<pre><code class="xml">&lt;plugin&gt;
+    &lt;groupId&gt;org.glassfish&lt;/groupId&gt;
+    &lt;artifactId&gt;maven-embedded-glassfish-plugin&lt;/artifactId&gt;
+    &lt;version&gt;3.1.1&lt;/version&gt;
+&lt;/plugin&gt;
+</code></pre>
+
+<pre><code class="xml">&lt;plugin&gt;
+    &lt;groupId&gt;org.apache.tomcat.maven&lt;/groupId&gt;
+    &lt;artifactId&gt;tomcat7-maven-plugin&lt;/artifactId&gt;
+    &lt;version&gt;2.0&lt;/version&gt;
+&lt;/plugin&gt;
+</code></pre>
+
+<p>First one - Jetty - seems to be the most lightweight solution, if you don&rsquo;t use JMX (maybe there is a way to turn it on and configure it, but I wasn&rsquo;t able to figure it out) this one is for you. Setup is quick, easy and what&rsquo;s most important it does not take much time to set it up, run tests, tear down and get a report.</p>
+
+<p>How to do this&hellip; will come next week. Stay tuned.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Framework Hell #2]]></title>
+    <link href="http://maketestingharder.github.io/blog/2013/12/07/framework-hell-number-2/"/>
+    <updated>2013-12-07T20:34:51+01:00</updated>
+    <id>http://maketestingharder.github.io/blog/2013/12/07/framework-hell-number-2</id>
+    <content type="html"><![CDATA[<p>Let&rsquo;s continue this -> <a href="/blog/2013/10/29/framework-hell/">Framework Hell</a></p>
+
+<p>First step is simple, add basic dependencies.</p>
+
+<!-- more -->
+
+
+<pre><code class="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"&gt;
+    &lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;
+
+    &lt;groupId&gt;maketestingharder&lt;/groupId&gt;
+    &lt;artifactId&gt;frameworkHell&lt;/artifactId&gt;
+    &lt;version&gt;666&lt;/version&gt;
+
+    &lt;dependencies&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.spockframework&lt;/groupId&gt;
+            &lt;artifactId&gt;spock-core&lt;/artifactId&gt;
+            &lt;version&gt;0.7-groovy-2.0&lt;/version&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.jbehave&lt;/groupId&gt;
+            &lt;artifactId&gt;jbehave-core&lt;/artifactId&gt;
+            &lt;version&gt;3.8&lt;/version&gt;
+            &lt;scope&gt;test&lt;/scope&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;info.cukes&lt;/groupId&gt;
+            &lt;artifactId&gt;cucumber-core&lt;/artifactId&gt;
+            &lt;version&gt;1.0.10&lt;/version&gt;
+            &lt;scope&gt;test&lt;/scope&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;info.cukes&lt;/groupId&gt;
+            &lt;artifactId&gt;cucumber-java&lt;/artifactId&gt;
+            &lt;version&gt;1.0.10&lt;/version&gt;
+            &lt;scope&gt;test&lt;/scope&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;info.cukes&lt;/groupId&gt;
+            &lt;artifactId&gt;cucumber-junit&lt;/artifactId&gt;
+            &lt;version&gt;1.0.10&lt;/version&gt;
+            &lt;scope&gt;test&lt;/scope&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;info.cukes&lt;/groupId&gt;
+            &lt;artifactId&gt;cucumber-html&lt;/artifactId&gt;
+            &lt;version&gt;0.2.2&lt;/version&gt;
+            &lt;scope&gt;test&lt;/scope&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;de.codecentric&lt;/groupId&gt;
+            &lt;artifactId&gt;jbehave-junit-runner&lt;/artifactId&gt;
+            &lt;version&gt;1.0.2&lt;/version&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.testng&lt;/groupId&gt;
+            &lt;artifactId&gt;testng&lt;/artifactId&gt;
+            &lt;version&gt;6.8.5&lt;/version&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;junit&lt;/groupId&gt;
+            &lt;artifactId&gt;junit&lt;/artifactId&gt;
+            &lt;version&gt;4.11&lt;/version&gt;
+        &lt;/dependency&gt;
+    &lt;/dependencies&gt;
+    &lt;build&gt;
+     //
+    &lt;/build&gt;
+&lt;/project&gt;
+</code></pre>
+
+<p>Above section contains only basic dependencies, does not include parent section, which may contain common build steps shared between multiple child poms, does not contain dependency management section which could delegate dependency version management to other pom files (I guess this topic will have a separate entry as there are few ways to manage dependencies across multiple projects). For now we&rsquo;ll keep it simple (well.. maybe not exactly, since we&rsquo;d like to share complex problems instead of simple ones :P).</p>
+
+<p>Have you tried to build you&rsquo;re code? If you did, you have noticed that only testNG test were triggered. One more thing that you should notice is content of</p>
+
+<pre><code class="java">target/test-classes/
+</code></pre>
+
+<p>All Java classes were compiled, and made it to that folder&hellip; What about Spock, Groovy to be precise? Java has no idea about Groovy but Groovy is one of JVM languages and Groovy compiler is able to compile Java so we&rsquo;ll use gmaven-plugin to compile those. To do this we have to fill our build section with below entries.</p>
+
+<pre><code class="xml">&lt;build&gt;
+    &lt;plugins&gt;
+        &lt;plugin&gt;
+            &lt;groupId&gt;org.codehaus.gmaven&lt;/groupId&gt;
+            &lt;artifactId&gt;gmaven-plugin&lt;/artifactId&gt;
+            &lt;version&gt;1.4&lt;/version&gt;
+            &lt;executions&gt;
+                &lt;execution&gt;
+                    &lt;goals&gt;
+                        &lt;goal&gt;compile&lt;/goal&gt;
+                        &lt;goal&gt;testCompile&lt;/goal&gt;
+                    &lt;/goals&gt;
+                &lt;/execution&gt;
+            &lt;/executions&gt;
+            &lt;dependencies&gt;
+                &lt;dependency&gt;
+                    &lt;groupId&gt;org.codehaus.gmaven.runtime&lt;/groupId&gt;
+                    &lt;artifactId&gt;gmaven-runtime-2.0&lt;/artifactId&gt;
+                    &lt;version&gt;1.4&lt;/version&gt;
+                    &lt;exclusions&gt;
+                        &lt;exclusion&gt;
+                            &lt;groupId&gt;org.codehaus.groovy&lt;/groupId&gt;
+                            &lt;artifactId&gt;groovy-all&lt;/artifactId&gt;
+                        &lt;/exclusion&gt;
+                    &lt;/exclusions&gt;
+                &lt;/dependency&gt;
+                &lt;dependency&gt;
+                    &lt;groupId&gt;org.codehaus.groovy&lt;/groupId&gt;
+                    &lt;artifactId&gt;groovy-all&lt;/artifactId&gt;
+                    &lt;version&gt;2.1.5&lt;/version&gt;
+                &lt;/dependency&gt;
+            &lt;/dependencies&gt;
+        &lt;/plugin&gt;
+    &lt;/plugins&gt;
+&lt;/build&gt;
+</code></pre>
+
+<p>Build you&rsquo;re code now&hellip; What happens? Still only TestNG entries on console&hellip; but target/test-classes now contains also groovy/spock classes. So we&rsquo;re half way there (well&hellip; 1/5 because we still have plenty to configure).</p>
+
+<p>Now we have to setup test phases, so that unit test are triggered during test phase and IT tests in integration-tests phase. First one is simple. Just add this section.</p>
+
+<pre><code class="xml">&lt;plugin&gt;
+    &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;
+    &lt;artifactId&gt;maven-surefire-plugin&lt;/artifactId&gt;
+    &lt;version&gt;2.15&lt;/version&gt;
+        &lt;configuration&gt;
+            &lt;excludes&gt;
+                &lt;exclude&gt;**/*IT.java&lt;/exclude&gt;
+            &lt;/excludes&gt;
+        &lt;/configuration&gt;
+&lt;/plugin&gt;
+</code></pre>
+
+<p>Why there is &ldquo;.java&rdquo; in this config? Because groovy and java classes are at binary level treated alike and surefire-plugin treats them also alike.
+But this time instead of running more tests less were triggered. Where the hell are JUnit tests? In order to do this we need to setup two types of executions. One that will trigger TestNG and second that will kick off JUnit. So above section at the end should like like this.</p>
+
+<pre><code class="xml">&lt;plugin&gt;
+    &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;
+    &lt;artifactId&gt;maven-surefire-plugin&lt;/artifactId&gt;
+    &lt;version&gt;2.15&lt;/version&gt;
+    &lt;configuration&gt;
+        &lt;excludes&gt;
+            &lt;exclude&gt;**/*IT.java&lt;/exclude&gt;
+        &lt;/excludes&gt;
+    &lt;/configuration&gt;
+    &lt;executions&gt;
+        &lt;execution&gt;
+            &lt;id&gt;JUnitUnitTest&lt;/id&gt;
+            &lt;phase&gt;test&lt;/phase&gt;
+            &lt;goals&gt;
+                &lt;goal&gt;test&lt;/goal&gt;
+            &lt;/goals&gt;
+            &lt;configuration&gt;
+                &lt;excludes&gt;
+                    &lt;exclude&gt;**/*IT.java&lt;/exclude&gt;
+                &lt;/excludes&gt;
+                &lt;testNGArtifactName&gt;none:none&lt;/testNGArtifactName&gt;
+            &lt;/configuration&gt;
+        &lt;/execution&gt;
+    &lt;/executions&gt;
+&lt;/plugin&gt;
+</code></pre>
+
+<p>How about now? Surprised? I guess not&hellip; All we did is forcing test execution twice, first one with JUnit, second one with TestNG. And now we&rsquo;re half way there. As you&rsquo;ve noticed only Unit tests were triggered. Now we need to add another plugin that will trigger Integration Tests. So we need to add below section.</p>
+
+<pre><code class="xml">&lt;plugin&gt;
+    &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;
+    &lt;artifactId&gt;maven-failsafe-plugin&lt;/artifactId&gt;
+    &lt;version&gt;2.16&lt;/version&gt;
+    &lt;dependencies&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.apache.maven.surefire&lt;/groupId&gt;
+            &lt;artifactId&gt;surefire-testng&lt;/artifactId&gt;
+            &lt;version&gt;2.16&lt;/version&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.apache.maven.surefire&lt;/groupId&gt;
+            &lt;artifactId&gt;surefire-junit47&lt;/artifactId&gt;
+            &lt;version&gt;2.16&lt;/version&gt;
+        &lt;/dependency&gt;
+    &lt;/dependencies&gt;
+    &lt;executions&gt;
+        &lt;execution&gt;
+            &lt;id&gt;TestNGIT&lt;/id&gt;
+            &lt;phase&gt;integration-test&lt;/phase&gt;
+            &lt;goals&gt;
+                &lt;goal&gt;integration-test&lt;/goal&gt;
+            &lt;/goals&gt;
+            &lt;configuration&gt;
+                &lt;threadCount&gt;1&lt;/threadCount&gt;
+            &lt;/configuration&gt;
+        &lt;/execution&gt;
+    &lt;/executions&gt;
+&lt;/plugin&gt;
+</code></pre>
+
+<p>Last section does basically the same as previous one, but is triggered in integration test phase.</p>
+
+<p>Of course there are some drawbacks&hellip; I have no idea how to separate properly IT tests, for some reason failsafe-plugin does not work similarly to surefire-plugin that&rsquo;s why there are so many print lines despite the fact that those tests are not triggered (take a look at TestSummary for integration-test phase&hellip;).</p>
+
+<p>Next time I&rsquo;ll show you how to test Java web apps/services (*.war) without deploying them into test environment.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Framework Hell #1.5]]></title>
+    <link href="http://maketestingharder.github.io/blog/2013/11/20/framework-hell-number-1-dot-5/"/>
+    <updated>2013-11-20T19:56:55+01:00</updated>
+    <id>http://maketestingharder.github.io/blog/2013/11/20/framework-hell-number-1-dot-5</id>
+    <content type="html"><![CDATA[<p>Next post was supposed to be about pom.xml details&hellip; but it won&rsquo;t.
+Since I used Spock for Groovy tests why should&rsquo;t I also include Cucumber and JBehave</p>
+
+<p>So today I&rsquo;m going to fix this omission.</p>
+
+<!-- more -->
+
+
+<p>First let&rsquo;s add dependencies to pom file.</p>
+
+<pre><code class="xml">&lt;dependency&gt;
+    &lt;groupId&gt;org.jbehave&lt;/groupId&gt;
+    &lt;artifactId&gt;jbehave-core&lt;/artifactId&gt;
+    &lt;version&gt;3.8&lt;/version&gt;
+    &lt;scope&gt;test&lt;/scope&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;info.cukes&lt;/groupId&gt;
+    &lt;artifactId&gt;cucumber-core&lt;/artifactId&gt;
+    &lt;version&gt;1.0.10&lt;/version&gt;
+    &lt;scope&gt;test&lt;/scope&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;info.cukes&lt;/groupId&gt;
+    &lt;artifactId&gt;cucumber-java&lt;/artifactId&gt;
+    &lt;version&gt;1.0.10&lt;/version&gt;
+    &lt;scope&gt;test&lt;/scope&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;info.cukes&lt;/groupId&gt;
+    &lt;artifactId&gt;cucumber-junit&lt;/artifactId&gt;
+    &lt;version&gt;1.0.10&lt;/version&gt;
+    &lt;scope&gt;test&lt;/scope&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;info.cukes&lt;/groupId&gt;
+    &lt;artifactId&gt;cucumber-html&lt;/artifactId&gt;
+    &lt;version&gt;0.2.2&lt;/version&gt;
+    &lt;scope&gt;test&lt;/scope&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;de.codecentric&lt;/groupId&gt;
+    &lt;artifactId&gt;jbehave-junit-runner&lt;/artifactId&gt;
+    &lt;version&gt;1.0.2&lt;/version&gt;
+&lt;/dependency&gt;
+</code></pre>
+
+<p>Now freaked file/folder structure with names that assure we&rsquo;ll trigger tests when needed.</p>
+
+<p><img src="/blog/images/folder_structure.png"></p>
+
+<p>You may ask why cucumber folder structure is such a mess.
+It&rsquo;s because this was the only way I was able to force Cucumber to use Unit Test Steps with Unit Tests and Integration Test Steps with IT Tests. This solutions allows you to have same steps with different implementation for Unit Tests and different for IT Tests.</p>
+
+<p>Class implementation details will be a part of next post (Yep&hellip; before pom.xml post).</p>
+
+<p>Impatient readers can take a look at GitHub&hellip;</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Framework Hell]]></title>
+    <link href="http://maketestingharder.github.io/blog/2013/10/29/framework-hell/"/>
+    <updated>2013-10-29T19:04:26+01:00</updated>
+    <id>http://maketestingharder.github.io/blog/2013/10/29/framework-hell</id>
+    <content type="html"><![CDATA[<p>In most cases setting test for a project end up quite quick, unit test classes have &ldquo;Test&rdquo; suffix, while integration tests have &ldquo;IT&rdquo; suffix.</p>
+
+<p>But that&rsquo;s easy&hellip;</p>
+
+<p>Today we&rsquo;ll show you how to use Java with JUnit, TestNG and Groovy with Spock tightly coupled with Maven within one project/module.</p>
+
+<p>You may ask WHY??</p>
+
+<p>!!!! BECAUSE F*** YOU THAT&rsquo;S WHY !!!!</p>
+
+<!-- more -->
+
+
+<p>Why doing it the easy way when hard way is more fun !!!!!!!</p>
+
+<p>First we need to distinguish tests on language level.
+Easiest way is to keep them in dedicated folders</p>
+
+<pre><code class="java">  /src/test/java/
+  /src/test/groovy/
+</code></pre>
+
+<p>Now we need to distinguish tests by level and framework, best way is to do this by using suffixes and prefixes on classes.</p>
+
+<p>HINT!!
+Since Spock tests are handled by JUnit runner class you can treat those equally. What more&hellip; dividing tests based on framework will be done on Maven level so all we need to do is distinguish tests based on when they should be triggered within maven build lifecycle. Personally I like below convention.</p>
+
+<pre><code class="java  ">  SampleClassNameTest.java      &lt;-  Java Unit Tests
+  SampleClassNameIT.java        &lt;-  Java Integration Tests
+  SampleClassNameTest.groovy    &lt;-  Groovy Unit Tests
+  SampleClassNameSpec.groovy    &lt;-  Groovy Integration Tests
+</code></pre>
+
+<p>Be careful with class names, since Groovy classes are compiled to same .class as Java classes and land in the same target location make sure you don&rsquo;t have same classes in Java and Groovy locations (if they are in different packages then it&rsquo;s fine). But most of IDE&rsquo;s will prompt you if such situation occurs.</p>
+
+<p>And now last and simplest part of this setup&hellip; pom.xml</p>
+
+<p>Hah, just kidding, this is the most tricky part.
+But this will come in separate post in a few days.</p>
+]]></content>
+  </entry>
+  
+</feed>

@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Jetty | Make Testing Harder]]></title>
+  <link href="http://maketestingharder.github.io/blog/categories/jetty/atom.xml" rel="self"/>
+  <link href="http://maketestingharder.github.io/"/>
+  <updated>2015-05-26T22:31:05+02:00</updated>
+  <id>http://maketestingharder.github.io/</id>
+  <author>
+    <name><![CDATA[Make Testing Harder]]></name>
+    <email><![CDATA[maketestingharder@gmail.com]]></email>
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Testing Without Test Environment - Jetty]]></title>
+    <link href="http://maketestingharder.github.io/blog/2014/07/10/testing-without-test-environment-jetty/"/>
+    <updated>2014-07-10T21:44:39+02:00</updated>
+    <id>http://maketestingharder.github.io/blog/2014/07/10/testing-without-test-environment-jetty</id>
+    <content type="html"><![CDATA[<p>So how it actually goes?
+And the answer is, as always in IT world, it depends&hellip;</p>
+
+<p>For Jetty it&rsquo;s pretty simple.</p>
+
+<pre><code class="java">start Jetty -&gt; deploy war -&gt; run tests -&gt; stop Jetty
+</code></pre>
+
+<!-- more -->
+
+
+<pre><code class="xml">&lt;plugin&gt;
+    &lt;groupId&gt;org.eclipse.jetty&lt;/groupId&gt;
+    &lt;artifactId&gt;jetty-maven-plugin&lt;/artifactId&gt;
+    &lt;version&gt;9.0.0.M4&lt;/version&gt;
+    &lt;configuration&gt;
+        &lt;war&gt;${project.basedir}/webapp/frameworkHell.war&lt;/war&gt;
+        &lt;webAppConfig&gt;
+            &lt;contextPath&gt;/frameworkHell&lt;/contextPath&gt;
+        &lt;/webAppConfig&gt;
+    &lt;/configuration&gt;
+    &lt;executions&gt;
+        &lt;execution&gt;
+            &lt;id&gt;start-jetty&lt;/id&gt;
+            &lt;phase&gt;pre-integration-test&lt;/phase&gt;
+            &lt;goals&gt;
+                &lt;goal&gt;run-war&lt;/goal&gt;
+            &lt;/goals&gt;
+            &lt;configuration&gt;
+                &lt;scanIntervalSeconds&gt;0&lt;/scanIntervalSeconds&gt;
+                &lt;daemon&gt;true&lt;/daemon&gt;
+            &lt;/configuration&gt;
+        &lt;/execution&gt;
+        &lt;execution&gt;
+            &lt;id&gt;stop-jetty&lt;/id&gt;
+            &lt;phase&gt;post-integration-test&lt;/phase&gt;
+            &lt;goals&gt;
+                &lt;goal&gt;stop&lt;/goal&gt;
+            &lt;/goals&gt;
+            &lt;configuration&gt;
+                &lt;stopKey&gt;stopJetty&lt;/stopKey&gt;
+                &lt;stopPort&gt;9966&lt;/stopPort&gt;
+            &lt;/configuration&gt;
+        &lt;/execution&gt;
+    &lt;/executions&gt;
+&lt;/plugin&gt;
+</code></pre>
+
+<p>In order to do so we need to make sure that our application is build prior to test execution.
+This is one of drawbacks, but main advantage is that if those tests will fail, main build does not.
+All you need to do is add one more plugin (yep, one more!!) to your build section in pom file.</p>
+
+<p>Above section does all you need. All you have to do is to properly set path to your war file, and decide under what context path your app will be available.</p>
+
+<p>Just in case you&rsquo;d like to test it and you don&rsquo;t have war file you can use, take a look at my github, there&rsquo;s a simple web app that does nothing, it&rsquo;s a &ldquo;hello world&rdquo; example.</p>
+
+<p>Why Jetty?
+Because it&rsquo;s light, easy to use, and in most cases will be enough.
+Sure, you can use Tomcat (will show next time how to do this) but do you really need it? It&rsquo;s quite heavy, and configuration sometimes can give you headache.
+So if you don&rsquo;t use any fancy stuff like JMX, Jetty will do just best.</p>
+
+<p>Next time GlassFish&hellip; heavy server&hellip; but worth trying.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Testing Without Test Environment]]></title>
+    <link href="http://maketestingharder.github.io/blog/2014/06/17/testing-without-test-environment/"/>
+    <updated>2014-06-17T21:42:07+02:00</updated>
+    <id>http://maketestingharder.github.io/blog/2014/06/17/testing-without-test-environment</id>
+    <content type="html"><![CDATA[<p>It&rsquo;s always a problem&hellip; you develop a code, write unit tests, you build your project locally so unit tests can give you a quick feedback. What do you do if you need to test a web-app? You build it, run unit tests, everything seems to work fine, CI server builds your code, run tests and everything is ok&hellip; until you deploy your war/ear file into application server. Then it turns out it does not deploy, and your head blows, s<strong><em>* and f</em></strong> are flying around&hellip;</p>
+
+<!-- more -->
+
+
+<p>Wouldn&rsquo;t it be nice if you wouldn&rsquo;t have to wait for whole CI/CD pipeline or manual deploy to be notified that your app can&rsquo;t be deployed or you can&rsquo;t communicate with it due to incorrect dependencies.</p>
+
+<p>Turns out it&rsquo;s quite easy to do it. All you have to do is use embedded application server. I&rsquo;ll show you how to pick one, and set it according to your needs.</p>
+
+<p>It always comes down to five phases/steps tightly coupled to maven life cycle.</p>
+
+<p>There are few different maven plugins that can help you with it.</p>
+
+<pre><code class="xml">&lt;plugin&gt;
+    &lt;groupId&gt;org.eclipse.jetty&lt;/groupId&gt;
+    &lt;artifactId&gt;jetty-maven-plugin&lt;/artifactId&gt;
+    &lt;version&gt;9.0.0.M4&lt;/version&gt;
+&lt;/plugin&gt;
+</code></pre>
+
+<pre><code class="xml">&lt;plugin&gt;
+    &lt;groupId&gt;org.glassfish&lt;/groupId&gt;
+    &lt;artifactId&gt;maven-embedded-glassfish-plugin&lt;/artifactId&gt;
+    &lt;version&gt;3.1.1&lt;/version&gt;
+&lt;/plugin&gt;
+</code></pre>
+
+<pre><code class="xml">&lt;plugin&gt;
+    &lt;groupId&gt;org.apache.tomcat.maven&lt;/groupId&gt;
+    &lt;artifactId&gt;tomcat7-maven-plugin&lt;/artifactId&gt;
+    &lt;version&gt;2.0&lt;/version&gt;
+&lt;/plugin&gt;
+</code></pre>
+
+<p>First one - Jetty - seems to be the most lightweight solution, if you don&rsquo;t use JMX (maybe there is a way to turn it on and configure it, but I wasn&rsquo;t able to figure it out) this one is for you. Setup is quick, easy and what&rsquo;s most important it does not take much time to set it up, run tests, tear down and get a report.</p>
+
+<p>How to do this&hellip; will come next week. Stay tuned.</p>
+]]></content>
+  </entry>
+  
+</feed>

@@ -4,7 +4,7 @@
   <title><![CDATA[Make Testing Harder]]></title>
   <link href="http://maketestingharder.github.io/atom.xml" rel="self"/>
   <link href="http://maketestingharder.github.io/"/>
-  <updated>2015-05-26T19:20:33+02:00</updated>
+  <updated>2015-05-26T22:31:05+02:00</updated>
   <id>http://maketestingharder.github.io/</id>
   <author>
     <name><![CDATA[Make Testing Harder]]></name>
@@ -12,5 +12,950 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Testing Without Test Environment - Jetty]]></title>
+    <link href="http://maketestingharder.github.io/blog/2014/07/10/testing-without-test-environment-jetty/"/>
+    <updated>2014-07-10T21:44:39+02:00</updated>
+    <id>http://maketestingharder.github.io/blog/2014/07/10/testing-without-test-environment-jetty</id>
+    <content type="html"><![CDATA[<p>So how it actually goes?
+And the answer is, as always in IT world, it depends&hellip;</p>
+
+<p>For Jetty it&rsquo;s pretty simple.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">start</span> <span class="n">Jetty</span> <span class="o">-&gt;</span> <span class="n">deploy</span> <span class="n">war</span> <span class="o">-&gt;</span> <span class="n">run</span> <span class="n">tests</span> <span class="o">-&gt;</span> <span class="n">stop</span> <span class="n">Jetty</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<!-- more -->
+
+
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;plugin&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;groupId&gt;</span>org.eclipse.jetty<span class="nt">&lt;/groupId&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;artifactId&gt;</span>jetty-maven-plugin<span class="nt">&lt;/artifactId&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;version&gt;</span>9.0.0.M4<span class="nt">&lt;/version&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;configuration&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;war&gt;</span>${project.basedir}/webapp/frameworkHell.war<span class="nt">&lt;/war&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;webAppConfig&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;contextPath&gt;</span>/frameworkHell<span class="nt">&lt;/contextPath&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;/webAppConfig&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;/configuration&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;executions&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;execution&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;id&gt;</span>start-jetty<span class="nt">&lt;/id&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;phase&gt;</span>pre-integration-test<span class="nt">&lt;/phase&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;goals&gt;</span>
+</span><span class='line'>                <span class="nt">&lt;goal&gt;</span>run-war<span class="nt">&lt;/goal&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;/goals&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;configuration&gt;</span>
+</span><span class='line'>                <span class="nt">&lt;scanIntervalSeconds&gt;</span>0<span class="nt">&lt;/scanIntervalSeconds&gt;</span>
+</span><span class='line'>                <span class="nt">&lt;daemon&gt;</span>true<span class="nt">&lt;/daemon&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;/configuration&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;/execution&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;execution&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;id&gt;</span>stop-jetty<span class="nt">&lt;/id&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;phase&gt;</span>post-integration-test<span class="nt">&lt;/phase&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;goals&gt;</span>
+</span><span class='line'>                <span class="nt">&lt;goal&gt;</span>stop<span class="nt">&lt;/goal&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;/goals&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;configuration&gt;</span>
+</span><span class='line'>                <span class="nt">&lt;stopKey&gt;</span>stopJetty<span class="nt">&lt;/stopKey&gt;</span>
+</span><span class='line'>                <span class="nt">&lt;stopPort&gt;</span>9966<span class="nt">&lt;/stopPort&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;/configuration&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;/execution&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;/executions&gt;</span>
+</span><span class='line'><span class="nt">&lt;/plugin&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>In order to do so we need to make sure that our application is build prior to test execution.
+This is one of drawbacks, but main advantage is that if those tests will fail, main build does not.
+All you need to do is add one more plugin (yep, one more!!) to your build section in pom file.</p>
+
+<p>Above section does all you need. All you have to do is to properly set path to your war file, and decide under what context path your app will be available.</p>
+
+<p>Just in case you&rsquo;d like to test it and you don&rsquo;t have war file you can use, take a look at my github, there&rsquo;s a simple web app that does nothing, it&rsquo;s a &ldquo;hello world&rdquo; example.</p>
+
+<p>Why Jetty?
+Because it&rsquo;s light, easy to use, and in most cases will be enough.
+Sure, you can use Tomcat (will show next time how to do this) but do you really need it? It&rsquo;s quite heavy, and configuration sometimes can give you headache.
+So if you don&rsquo;t use any fancy stuff like JMX, Jetty will do just best.</p>
+
+<p>Next time GlassFish&hellip; heavy server&hellip; but worth trying.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Testing Without Test Environment]]></title>
+    <link href="http://maketestingharder.github.io/blog/2014/06/17/testing-without-test-environment/"/>
+    <updated>2014-06-17T21:42:07+02:00</updated>
+    <id>http://maketestingharder.github.io/blog/2014/06/17/testing-without-test-environment</id>
+    <content type="html"><![CDATA[<p>It&rsquo;s always a problem&hellip; you develop a code, write unit tests, you build your project locally so unit tests can give you a quick feedback. What do you do if you need to test a web-app? You build it, run unit tests, everything seems to work fine, CI server builds your code, run tests and everything is ok&hellip; until you deploy your war/ear file into application server. Then it turns out it does not deploy, and your head blows, s<strong><em>* and f</em></strong> are flying around&hellip;</p>
+
+<!-- more -->
+
+
+<p>Wouldn&rsquo;t it be nice if you wouldn&rsquo;t have to wait for whole CI/CD pipeline or manual deploy to be notified that your app can&rsquo;t be deployed or you can&rsquo;t communicate with it due to incorrect dependencies.</p>
+
+<p>Turns out it&rsquo;s quite easy to do it. All you have to do is use embedded application server. I&rsquo;ll show you how to pick one, and set it according to your needs.</p>
+
+<p>It always comes down to five phases/steps tightly coupled to maven life cycle.</p>
+
+<p>There are few different maven plugins that can help you with it.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;plugin&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;groupId&gt;</span>org.eclipse.jetty<span class="nt">&lt;/groupId&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;artifactId&gt;</span>jetty-maven-plugin<span class="nt">&lt;/artifactId&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;version&gt;</span>9.0.0.M4<span class="nt">&lt;/version&gt;</span>
+</span><span class='line'><span class="nt">&lt;/plugin&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;plugin&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;groupId&gt;</span>org.glassfish<span class="nt">&lt;/groupId&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;artifactId&gt;</span>maven-embedded-glassfish-plugin<span class="nt">&lt;/artifactId&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;version&gt;</span>3.1.1<span class="nt">&lt;/version&gt;</span>
+</span><span class='line'><span class="nt">&lt;/plugin&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;plugin&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;groupId&gt;</span>org.apache.tomcat.maven<span class="nt">&lt;/groupId&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;artifactId&gt;</span>tomcat7-maven-plugin<span class="nt">&lt;/artifactId&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;version&gt;</span>2.0<span class="nt">&lt;/version&gt;</span>
+</span><span class='line'><span class="nt">&lt;/plugin&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>First one - Jetty - seems to be the most lightweight solution, if you don&rsquo;t use JMX (maybe there is a way to turn it on and configure it, but I wasn&rsquo;t able to figure it out) this one is for you. Setup is quick, easy and what&rsquo;s most important it does not take much time to set it up, run tests, tear down and get a report.</p>
+
+<p>How to do this&hellip; will come next week. Stay tuned.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[State of Testing?]]></title>
+    <link href="http://maketestingharder.github.io/blog/2013/12/09/state-of-testing/"/>
+    <updated>2013-12-09T20:39:05+01:00</updated>
+    <id>http://maketestingharder.github.io/blog/2013/12/09/state-of-testing</id>
+    <content type="html"><![CDATA[<p>Have you ever wondered what&rsquo;s the current state of testing?
+I have no idea, that&rsquo;s why I took part in <a href="http://qablog.practitest.com/state-of-testing/">State of Testing Survey 2013</a>.</p>
+
+<!-- more -->
+
+
+<p>You can do it too, and once results are published we&rsquo;re all be satisfied.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Framework Hell #2]]></title>
+    <link href="http://maketestingharder.github.io/blog/2013/12/07/framework-hell-number-2/"/>
+    <updated>2013-12-07T20:34:51+01:00</updated>
+    <id>http://maketestingharder.github.io/blog/2013/12/07/framework-hell-number-2</id>
+    <content type="html"><![CDATA[<p>Let&rsquo;s continue this -> <a href="http://maketestingharder.github.io/blog/2013/10/29/framework-hell/">Framework Hell</a></p>
+
+<p>First step is simple, add basic dependencies.</p>
+
+<!-- more -->
+
+
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
+</span><span class='line'><span class="nt">&lt;project</span> <span class="na">xmlns=</span><span class="s">&quot;http://maven.apache.org/POM/4.0.0&quot;</span>
+</span><span class='line'>         <span class="na">xmlns:xsi=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span>
+</span><span class='line'>         <span class="na">xsi:schemaLocation=</span><span class="s">&quot;http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;modelVersion&gt;</span>4.0.0<span class="nt">&lt;/modelVersion&gt;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nt">&lt;groupId&gt;</span>maketestingharder<span class="nt">&lt;/groupId&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;artifactId&gt;</span>frameworkHell<span class="nt">&lt;/artifactId&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;version&gt;</span>666<span class="nt">&lt;/version&gt;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nt">&lt;dependencies&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;dependency&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;groupId&gt;</span>org.spockframework<span class="nt">&lt;/groupId&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;artifactId&gt;</span>spock-core<span class="nt">&lt;/artifactId&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;version&gt;</span>0.7-groovy-2.0<span class="nt">&lt;/version&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;/dependency&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;dependency&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;groupId&gt;</span>org.jbehave<span class="nt">&lt;/groupId&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;artifactId&gt;</span>jbehave-core<span class="nt">&lt;/artifactId&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;version&gt;</span>3.8<span class="nt">&lt;/version&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;scope&gt;</span>test<span class="nt">&lt;/scope&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;/dependency&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;dependency&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;groupId&gt;</span>info.cukes<span class="nt">&lt;/groupId&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;artifactId&gt;</span>cucumber-core<span class="nt">&lt;/artifactId&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;version&gt;</span>1.0.10<span class="nt">&lt;/version&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;scope&gt;</span>test<span class="nt">&lt;/scope&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;/dependency&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;dependency&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;groupId&gt;</span>info.cukes<span class="nt">&lt;/groupId&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;artifactId&gt;</span>cucumber-java<span class="nt">&lt;/artifactId&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;version&gt;</span>1.0.10<span class="nt">&lt;/version&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;scope&gt;</span>test<span class="nt">&lt;/scope&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;/dependency&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;dependency&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;groupId&gt;</span>info.cukes<span class="nt">&lt;/groupId&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;artifactId&gt;</span>cucumber-junit<span class="nt">&lt;/artifactId&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;version&gt;</span>1.0.10<span class="nt">&lt;/version&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;scope&gt;</span>test<span class="nt">&lt;/scope&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;/dependency&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;dependency&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;groupId&gt;</span>info.cukes<span class="nt">&lt;/groupId&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;artifactId&gt;</span>cucumber-html<span class="nt">&lt;/artifactId&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;version&gt;</span>0.2.2<span class="nt">&lt;/version&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;scope&gt;</span>test<span class="nt">&lt;/scope&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;/dependency&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;dependency&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;groupId&gt;</span>de.codecentric<span class="nt">&lt;/groupId&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;artifactId&gt;</span>jbehave-junit-runner<span class="nt">&lt;/artifactId&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;version&gt;</span>1.0.2<span class="nt">&lt;/version&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;/dependency&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;dependency&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;groupId&gt;</span>org.testng<span class="nt">&lt;/groupId&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;artifactId&gt;</span>testng<span class="nt">&lt;/artifactId&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;version&gt;</span>6.8.5<span class="nt">&lt;/version&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;/dependency&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;dependency&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;groupId&gt;</span>junit<span class="nt">&lt;/groupId&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;artifactId&gt;</span>junit<span class="nt">&lt;/artifactId&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;version&gt;</span>4.11<span class="nt">&lt;/version&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;/dependency&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;/dependencies&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;build&gt;</span>
+</span><span class='line'>     //
+</span><span class='line'>    <span class="nt">&lt;/build&gt;</span>
+</span><span class='line'><span class="nt">&lt;/project&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Above section contains only basic dependencies, does not include parent section, which may contain common build steps shared between multiple child poms, does not contain dependency management section which could delegate dependency version management to other pom files (I guess this topic will have a separate entry as there are few ways to manage dependencies across multiple projects). For now we&rsquo;ll keep it simple (well.. maybe not exactly, since we&rsquo;d like to share complex problems instead of simple ones :P).</p>
+
+<p>Have you tried to build you&rsquo;re code? If you did, you have noticed that only testNG test were triggered. One more thing that you should notice is content of</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">target</span><span class="o">/</span><span class="n">test</span><span class="o">-</span><span class="n">classes</span><span class="o">/</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>All Java classes were compiled, and made it to that folder&hellip; What about Spock, Groovy to be precise? Java has no idea about Groovy but Groovy is one of JVM languages and Groovy compiler is able to compile Java so we&rsquo;ll use gmaven-plugin to compile those. To do this we have to fill our build section with below entries.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;build&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;plugins&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;plugin&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;groupId&gt;</span>org.codehaus.gmaven<span class="nt">&lt;/groupId&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;artifactId&gt;</span>gmaven-plugin<span class="nt">&lt;/artifactId&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;version&gt;</span>1.4<span class="nt">&lt;/version&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;executions&gt;</span>
+</span><span class='line'>                <span class="nt">&lt;execution&gt;</span>
+</span><span class='line'>                    <span class="nt">&lt;goals&gt;</span>
+</span><span class='line'>                        <span class="nt">&lt;goal&gt;</span>compile<span class="nt">&lt;/goal&gt;</span>
+</span><span class='line'>                        <span class="nt">&lt;goal&gt;</span>testCompile<span class="nt">&lt;/goal&gt;</span>
+</span><span class='line'>                    <span class="nt">&lt;/goals&gt;</span>
+</span><span class='line'>                <span class="nt">&lt;/execution&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;/executions&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;dependencies&gt;</span>
+</span><span class='line'>                <span class="nt">&lt;dependency&gt;</span>
+</span><span class='line'>                    <span class="nt">&lt;groupId&gt;</span>org.codehaus.gmaven.runtime<span class="nt">&lt;/groupId&gt;</span>
+</span><span class='line'>                    <span class="nt">&lt;artifactId&gt;</span>gmaven-runtime-2.0<span class="nt">&lt;/artifactId&gt;</span>
+</span><span class='line'>                    <span class="nt">&lt;version&gt;</span>1.4<span class="nt">&lt;/version&gt;</span>
+</span><span class='line'>                    <span class="nt">&lt;exclusions&gt;</span>
+</span><span class='line'>                        <span class="nt">&lt;exclusion&gt;</span>
+</span><span class='line'>                            <span class="nt">&lt;groupId&gt;</span>org.codehaus.groovy<span class="nt">&lt;/groupId&gt;</span>
+</span><span class='line'>                            <span class="nt">&lt;artifactId&gt;</span>groovy-all<span class="nt">&lt;/artifactId&gt;</span>
+</span><span class='line'>                        <span class="nt">&lt;/exclusion&gt;</span>
+</span><span class='line'>                    <span class="nt">&lt;/exclusions&gt;</span>
+</span><span class='line'>                <span class="nt">&lt;/dependency&gt;</span>
+</span><span class='line'>                <span class="nt">&lt;dependency&gt;</span>
+</span><span class='line'>                    <span class="nt">&lt;groupId&gt;</span>org.codehaus.groovy<span class="nt">&lt;/groupId&gt;</span>
+</span><span class='line'>                    <span class="nt">&lt;artifactId&gt;</span>groovy-all<span class="nt">&lt;/artifactId&gt;</span>
+</span><span class='line'>                    <span class="nt">&lt;version&gt;</span>2.1.5<span class="nt">&lt;/version&gt;</span>
+</span><span class='line'>                <span class="nt">&lt;/dependency&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;/dependencies&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;/plugin&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;/plugins&gt;</span>
+</span><span class='line'><span class="nt">&lt;/build&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Build you&rsquo;re code now&hellip; What happens? Still only TestNG entries on console&hellip; but target/test-classes now contains also groovy/spock classes. So we&rsquo;re half way there (well&hellip; 1/5 because we still have plenty to configure).</p>
+
+<p>Now we have to setup test phases, so that unit test are triggered during test phase and IT tests in integration-tests phase. First one is simple. Just add this section.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;plugin&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;groupId&gt;</span>org.apache.maven.plugins<span class="nt">&lt;/groupId&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;artifactId&gt;</span>maven-surefire-plugin<span class="nt">&lt;/artifactId&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;version&gt;</span>2.15<span class="nt">&lt;/version&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;configuration&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;excludes&gt;</span>
+</span><span class='line'>                <span class="nt">&lt;exclude&gt;</span>**/*IT.java<span class="nt">&lt;/exclude&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;/excludes&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;/configuration&gt;</span>
+</span><span class='line'><span class="nt">&lt;/plugin&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Why there is &ldquo;.java&rdquo; in this config? Because groovy and java classes are at binary level treated alike and surefire-plugin treats them also alike.
+But this time instead of running more tests less were triggered. Where the hell are JUnit tests? In order to do this we need to setup two types of executions. One that will trigger TestNG and second that will kick off JUnit. So above section at the end should like like this.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;plugin&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;groupId&gt;</span>org.apache.maven.plugins<span class="nt">&lt;/groupId&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;artifactId&gt;</span>maven-surefire-plugin<span class="nt">&lt;/artifactId&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;version&gt;</span>2.15<span class="nt">&lt;/version&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;configuration&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;excludes&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;exclude&gt;</span>**/*IT.java<span class="nt">&lt;/exclude&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;/excludes&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;/configuration&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;executions&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;execution&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;id&gt;</span>JUnitUnitTest<span class="nt">&lt;/id&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;phase&gt;</span>test<span class="nt">&lt;/phase&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;goals&gt;</span>
+</span><span class='line'>                <span class="nt">&lt;goal&gt;</span>test<span class="nt">&lt;/goal&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;/goals&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;configuration&gt;</span>
+</span><span class='line'>                <span class="nt">&lt;excludes&gt;</span>
+</span><span class='line'>                    <span class="nt">&lt;exclude&gt;</span>**/*IT.java<span class="nt">&lt;/exclude&gt;</span>
+</span><span class='line'>                <span class="nt">&lt;/excludes&gt;</span>
+</span><span class='line'>                <span class="nt">&lt;testNGArtifactName&gt;</span>none:none<span class="nt">&lt;/testNGArtifactName&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;/configuration&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;/execution&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;/executions&gt;</span>
+</span><span class='line'><span class="nt">&lt;/plugin&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>How about now? Surprised? I guess not&hellip; All we did is forcing test execution twice, first one with JUnit, second one with TestNG. And now we&rsquo;re half way there. As you&rsquo;ve noticed only Unit tests were triggered. Now we need to add another plugin that will trigger Integration Tests. So we need to add below section.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;plugin&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;groupId&gt;</span>org.apache.maven.plugins<span class="nt">&lt;/groupId&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;artifactId&gt;</span>maven-failsafe-plugin<span class="nt">&lt;/artifactId&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;version&gt;</span>2.16<span class="nt">&lt;/version&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;dependencies&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;dependency&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;groupId&gt;</span>org.apache.maven.surefire<span class="nt">&lt;/groupId&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;artifactId&gt;</span>surefire-testng<span class="nt">&lt;/artifactId&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;version&gt;</span>2.16<span class="nt">&lt;/version&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;/dependency&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;dependency&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;groupId&gt;</span>org.apache.maven.surefire<span class="nt">&lt;/groupId&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;artifactId&gt;</span>surefire-junit47<span class="nt">&lt;/artifactId&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;version&gt;</span>2.16<span class="nt">&lt;/version&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;/dependency&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;/dependencies&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;executions&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;execution&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;id&gt;</span>TestNGIT<span class="nt">&lt;/id&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;phase&gt;</span>integration-test<span class="nt">&lt;/phase&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;goals&gt;</span>
+</span><span class='line'>                <span class="nt">&lt;goal&gt;</span>integration-test<span class="nt">&lt;/goal&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;/goals&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;configuration&gt;</span>
+</span><span class='line'>                <span class="nt">&lt;threadCount&gt;</span>1<span class="nt">&lt;/threadCount&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;/configuration&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;/execution&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;/executions&gt;</span>
+</span><span class='line'><span class="nt">&lt;/plugin&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Last section does basically the same as previous one, but is triggered in integration test phase.</p>
+
+<p>Of course there are some drawbacks&hellip; I have no idea how to separate properly IT tests, for some reason failsafe-plugin does not work similarly to surefire-plugin that&rsquo;s why there are so many print lines despite the fact that those tests are not triggered (take a look at TestSummary for integration-test phase&hellip;).</p>
+
+<p>Next time I&rsquo;ll show you how to test Java web apps/services (*.war) without deploying them into test environment.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Framework Hell #1.6]]></title>
+    <link href="http://maketestingharder.github.io/blog/2013/12/01/framework-hell-number-1-dot-6/"/>
+    <updated>2013-12-01T20:29:00+01:00</updated>
+    <id>http://maketestingharder.github.io/blog/2013/12/01/framework-hell-number-1-dot-6</id>
+    <content type="html"><![CDATA[<p>As I promised this post will show basic, maybe not simplest but definitely most effective setup of both Cucumber and JBehave, which you can in most cases copy-paste into your project.</p>
+
+<!-- more -->
+
+
+<p>Project structure was published in last post.
+Now for class implementation.</p>
+
+<p>Cucumber first.
+This is the simplest ever setup. Of course it won&rsquo;t be the simplest one, required to run Cucumber, but this one allows you to define which steps file can be used with desired feature file.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kn">package</span> <span class="n">cucumber</span><span class="o">.</span><span class="na">unit</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kn">import</span> <span class="nn">cucumber.junit.Cucumber</span><span class="o">;</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">org.junit.runner.RunWith</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nd">@RunWith</span><span class="o">(</span><span class="n">Cucumber</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
+</span><span class='line'><span class="nd">@Cucumber.Options</span><span class="o">(</span>
+</span><span class='line'>        <span class="n">features</span><span class="o">={</span><span class="s">&quot;src/test/resources/cucumber/unit/UnitTests.feature&quot;</span><span class="o">},</span>
+</span><span class='line'>        <span class="n">glue</span><span class="o">=</span><span class="s">&quot;cucumber.unit.steps&quot;</span><span class="o">)</span>
+</span><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">CucumberUnitTest</span> <span class="o">{</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>And now few words of explanation:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="nd">@RunWith</span><span class="o">(</span><span class="n">Cucumber</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>tells JUnit which class should be used to run Cucumber tests, so it&rsquo;s mandatory</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">features</span><span class="o">={</span><span class="s">&quot;src/test/resources/cucumber/unit/UnitTests.feature&quot;</span><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>tells Cucumber where features are located, I&rsquo;m precisely pointing file, but location is also fine</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">glue</span><span class="o">=</span><span class="s">&quot;cucumber.unit.steps&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>tells Cucumber where to look for classes with steps definitions/implementation</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="nd">@Cucumber.Options</span><span class="o">()</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>tells Cucumber how it should behave, what should it do before tests, during them, and after. You can specify how report should look like, and more. In minimal setup you don&rsquo;t need this annotation at all.</p>
+
+<p>With JBehave it&rsquo;s a bit more code.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="nd">@RunWith</span><span class="o">(</span><span class="n">JUnitReportingRunner</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
+</span><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">JBehaveUnitTest</span> <span class="kd">extends</span> <span class="n">JUnitStories</span> <span class="o">{</span>
+</span><span class='line'>    <span class="kd">private</span> <span class="n">Configuration</span> <span class="n">configuration</span><span class="o">;</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="nf">JBehaveUnitTest</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>        <span class="kd">super</span><span class="o">();</span>
+</span><span class='line'>        <span class="n">configuration</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">Configuration</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>        <span class="o">};</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">configuration</span><span class="o">.</span><span class="na">useFailureStrategy</span><span class="o">(</span><span class="k">new</span> <span class="nf">RethrowingFailure</span><span class="o">());</span>
+</span><span class='line'>        <span class="n">configuration</span><span class="o">.</span><span class="na">useKeywords</span><span class="o">(</span> <span class="k">new</span> <span class="nf">LocalizedKeywords</span><span class="o">(</span> <span class="n">Locale</span><span class="o">.</span><span class="na">ENGLISH</span> <span class="o">)</span> <span class="o">);</span>
+</span><span class='line'>        <span class="n">configuration</span><span class="o">.</span><span class="na">usePathCalculator</span><span class="o">(</span> <span class="k">new</span> <span class="nf">AbsolutePathCalculator</span><span class="o">()</span> <span class="o">);</span>
+</span><span class='line'>        <span class="n">configuration</span><span class="o">.</span><span class="na">useParameterControls</span><span class="o">(</span> <span class="k">new</span> <span class="nf">ParameterControls</span><span class="o">()</span> <span class="o">);</span>
+</span><span class='line'>        <span class="n">configuration</span><span class="o">.</span><span class="na">useParameterConverters</span><span class="o">(</span> <span class="k">new</span> <span class="nf">ParameterConverters</span><span class="o">()</span> <span class="o">);</span>
+</span><span class='line'>        <span class="n">configuration</span><span class="o">.</span><span class="na">useParanamer</span><span class="o">(</span> <span class="k">new</span> <span class="nf">NullParanamer</span><span class="o">()</span> <span class="o">);</span>
+</span><span class='line'>        <span class="n">configuration</span><span class="o">.</span><span class="na">usePendingStepStrategy</span><span class="o">(</span> <span class="k">new</span> <span class="nf">PassingUponPendingStep</span><span class="o">()</span> <span class="o">);</span>
+</span><span class='line'>        <span class="n">configuration</span><span class="o">.</span><span class="na">useStepCollector</span><span class="o">(</span><span class="k">new</span> <span class="nf">MarkUnmatchedStepsAsPending</span><span class="o">());</span>
+</span><span class='line'>        <span class="n">configuration</span><span class="o">.</span><span class="na">useStepdocReporter</span><span class="o">(</span><span class="k">new</span> <span class="nf">PrintStreamStepdocReporter</span><span class="o">());</span>
+</span><span class='line'>        <span class="n">configuration</span><span class="o">.</span><span class="na">useStepFinder</span><span class="o">(</span><span class="k">new</span> <span class="nf">StepFinder</span><span class="o">());</span>
+</span><span class='line'>        <span class="n">configuration</span><span class="o">.</span><span class="na">useStepMonitor</span><span class="o">(</span><span class="k">new</span> <span class="nf">SilentStepMonitor</span><span class="o">());</span>
+</span><span class='line'>        <span class="n">configuration</span>
+</span><span class='line'>                <span class="o">.</span><span class="na">useStepPatternParser</span><span class="o">(</span><span class="k">new</span> <span class="nf">RegexPrefixCapturingPatternParser</span><span class="o">());</span>
+</span><span class='line'>        <span class="n">configuration</span><span class="o">.</span><span class="na">useStoryControls</span><span class="o">(</span><span class="k">new</span> <span class="nf">StoryControls</span><span class="o">());</span>
+</span><span class='line'>        <span class="n">configuration</span><span class="o">.</span><span class="na">useStoryLoader</span><span class="o">(</span><span class="k">new</span> <span class="nf">LoadFromClasspath</span><span class="o">());</span>
+</span><span class='line'>        <span class="n">configuration</span><span class="o">.</span><span class="na">useStoryParser</span><span class="o">(</span><span class="k">new</span> <span class="nf">RegexStoryParser</span><span class="o">(</span><span class="n">configuration</span>
+</span><span class='line'>                <span class="o">.</span><span class="na">keywords</span><span class="o">()));</span>
+</span><span class='line'>        <span class="n">configuration</span><span class="o">.</span><span class="na">useStoryPathResolver</span><span class="o">(</span><span class="k">new</span> <span class="nf">UnderscoredCamelCaseResolver</span><span class="o">());</span>
+</span><span class='line'>        <span class="n">configuration</span><span class="o">.</span><span class="na">useStoryReporterBuilder</span><span class="o">(</span><span class="k">new</span> <span class="nf">StoryReporterBuilder</span><span class="o">());</span>
+</span><span class='line'>        <span class="n">configuration</span><span class="o">.</span><span class="na">useViewGenerator</span><span class="o">(</span><span class="k">new</span> <span class="nf">FreemarkerViewGenerator</span><span class="o">());</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">EmbedderControls</span> <span class="n">embedderControls</span> <span class="o">=</span> <span class="n">configuredEmbedder</span><span class="o">()</span>
+</span><span class='line'>                <span class="o">.</span><span class="na">embedderControls</span><span class="o">();</span>
+</span><span class='line'>        <span class="n">embedderControls</span><span class="o">.</span><span class="na">doBatch</span><span class="o">(</span><span class="kc">false</span><span class="o">);</span>
+</span><span class='line'>        <span class="n">embedderControls</span><span class="o">.</span><span class="na">doGenerateViewAfterStories</span><span class="o">(</span><span class="kc">false</span><span class="o">);</span>
+</span><span class='line'>        <span class="n">embedderControls</span><span class="o">.</span><span class="na">doIgnoreFailureInStories</span><span class="o">(</span><span class="kc">false</span><span class="o">);</span>
+</span><span class='line'>        <span class="n">embedderControls</span><span class="o">.</span><span class="na">doIgnoreFailureInView</span><span class="o">(</span><span class="kc">false</span><span class="o">);</span>
+</span><span class='line'>        <span class="n">embedderControls</span><span class="o">.</span><span class="na">doSkip</span><span class="o">(</span><span class="kc">false</span><span class="o">);</span>
+</span><span class='line'>        <span class="n">embedderControls</span><span class="o">.</span><span class="na">doVerboseFailures</span><span class="o">(</span><span class="kc">false</span><span class="o">);</span>
+</span><span class='line'>        <span class="n">embedderControls</span><span class="o">.</span><span class="na">doVerboseFiltering</span><span class="o">(</span><span class="kc">false</span><span class="o">);</span>
+</span><span class='line'>        <span class="n">embedderControls</span><span class="o">.</span><span class="na">useStoryTimeoutInSecs</span><span class="o">(</span><span class="mi">300</span><span class="o">);</span>
+</span><span class='line'>        <span class="n">embedderControls</span><span class="o">.</span><span class="na">useThreads</span><span class="o">(</span><span class="mi">1</span><span class="o">);</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nd">@Override</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="n">Configuration</span> <span class="nf">configuration</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">configuration</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nd">@Override</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="n">InjectableStepsFactory</span> <span class="nf">stepsFactory</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="k">new</span> <span class="nf">InstanceStepsFactory</span><span class="o">(</span><span class="n">configuration</span><span class="o">(),</span> <span class="k">new</span> <span class="nf">JBehaveUnitTestSteps</span><span class="o">());</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>    <span class="nd">@Override</span>
+</span><span class='line'>    <span class="kd">protected</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">string</span><span class="o">&gt;</span> <span class="nf">storyPaths</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">Arrays</span><span class="o">.</span><span class="na">asList</span><span class="o">(</span> <span class="s">&quot;jbehave/UnitTests.story&quot;</span> <span class="o">);</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'><span class="o">}&lt;/</span><span class="n">string</span><span class="o">&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Again few words of explanation (I&rsquo;ve skipped 99,9% of lines&hellip;):</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="nd">@RunWith</span><span class="o">(</span><span class="n">JUnitReportingRunner</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>tells JUnit which class should be used to run JBehave tests, so it&rsquo;s mandatory</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="nd">@Override</span>
+</span><span class='line'><span class="kd">protected</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">string</span><span class="o">&gt;</span> <span class="nf">storyPaths</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">Arrays</span><span class="o">.</span><span class="na">asList</span><span class="o">(</span> <span class="s">&quot;jbehave/UnitTests.story&quot;</span> <span class="o">);</span>
+</span><span class='line'><span class="o">}&lt;/</span><span class="n">string</span><span class="o">&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>tells JBehave which story files should be used in this test phase.</p>
+
+<p>And that&rsquo;s basically all for Cucumber and JBehave setup. Sure there is still some customization within pom.xml file&hellip; but this will come&hellip; hopefully soon.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Framework Hell #1.5]]></title>
+    <link href="http://maketestingharder.github.io/blog/2013/11/20/framework-hell-number-1-dot-5/"/>
+    <updated>2013-11-20T19:56:55+01:00</updated>
+    <id>http://maketestingharder.github.io/blog/2013/11/20/framework-hell-number-1-dot-5</id>
+    <content type="html"><![CDATA[<p>Next post was supposed to be about pom.xml details&hellip; but it won&rsquo;t.
+Since I used Spock for Groovy tests why should&rsquo;t I also include Cucumber and JBehave</p>
+
+<p>So today I&rsquo;m going to fix this omission.</p>
+
+<!-- more -->
+
+
+<p>First let&rsquo;s add dependencies to pom file.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;dependency&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;groupId&gt;</span>org.jbehave<span class="nt">&lt;/groupId&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;artifactId&gt;</span>jbehave-core<span class="nt">&lt;/artifactId&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;version&gt;</span>3.8<span class="nt">&lt;/version&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;scope&gt;</span>test<span class="nt">&lt;/scope&gt;</span>
+</span><span class='line'><span class="nt">&lt;/dependency&gt;</span>
+</span><span class='line'><span class="nt">&lt;dependency&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;groupId&gt;</span>info.cukes<span class="nt">&lt;/groupId&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;artifactId&gt;</span>cucumber-core<span class="nt">&lt;/artifactId&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;version&gt;</span>1.0.10<span class="nt">&lt;/version&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;scope&gt;</span>test<span class="nt">&lt;/scope&gt;</span>
+</span><span class='line'><span class="nt">&lt;/dependency&gt;</span>
+</span><span class='line'><span class="nt">&lt;dependency&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;groupId&gt;</span>info.cukes<span class="nt">&lt;/groupId&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;artifactId&gt;</span>cucumber-java<span class="nt">&lt;/artifactId&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;version&gt;</span>1.0.10<span class="nt">&lt;/version&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;scope&gt;</span>test<span class="nt">&lt;/scope&gt;</span>
+</span><span class='line'><span class="nt">&lt;/dependency&gt;</span>
+</span><span class='line'><span class="nt">&lt;dependency&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;groupId&gt;</span>info.cukes<span class="nt">&lt;/groupId&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;artifactId&gt;</span>cucumber-junit<span class="nt">&lt;/artifactId&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;version&gt;</span>1.0.10<span class="nt">&lt;/version&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;scope&gt;</span>test<span class="nt">&lt;/scope&gt;</span>
+</span><span class='line'><span class="nt">&lt;/dependency&gt;</span>
+</span><span class='line'><span class="nt">&lt;dependency&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;groupId&gt;</span>info.cukes<span class="nt">&lt;/groupId&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;artifactId&gt;</span>cucumber-html<span class="nt">&lt;/artifactId&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;version&gt;</span>0.2.2<span class="nt">&lt;/version&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;scope&gt;</span>test<span class="nt">&lt;/scope&gt;</span>
+</span><span class='line'><span class="nt">&lt;/dependency&gt;</span>
+</span><span class='line'><span class="nt">&lt;dependency&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;groupId&gt;</span>de.codecentric<span class="nt">&lt;/groupId&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;artifactId&gt;</span>jbehave-junit-runner<span class="nt">&lt;/artifactId&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;version&gt;</span>1.0.2<span class="nt">&lt;/version&gt;</span>
+</span><span class='line'><span class="nt">&lt;/dependency&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Now freaked file/folder structure with names that assure we&rsquo;ll trigger tests when needed.</p>
+
+<p><img src="http://maketestingharder.github.io/blog/images/folder_structure.png"></p>
+
+<p>You may ask why cucumber folder structure is such a mess.
+It&rsquo;s because this was the only way I was able to force Cucumber to use Unit Test Steps with Unit Tests and Integration Test Steps with IT Tests. This solutions allows you to have same steps with different implementation for Unit Tests and different for IT Tests.</p>
+
+<p>Class implementation details will be a part of next post (Yep&hellip; before pom.xml post).</p>
+
+<p>Impatient readers can take a look at GitHub&hellip;</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Framework Hell]]></title>
+    <link href="http://maketestingharder.github.io/blog/2013/10/29/framework-hell/"/>
+    <updated>2013-10-29T19:04:26+01:00</updated>
+    <id>http://maketestingharder.github.io/blog/2013/10/29/framework-hell</id>
+    <content type="html"><![CDATA[<p>In most cases setting test for a project end up quite quick, unit test classes have &ldquo;Test&rdquo; suffix, while integration tests have &ldquo;IT&rdquo; suffix.</p>
+
+<p>But that&rsquo;s easy&hellip;</p>
+
+<p>Today we&rsquo;ll show you how to use Java with JUnit, TestNG and Groovy with Spock tightly coupled with Maven within one project/module.</p>
+
+<p>You may ask WHY??</p>
+
+<p>!!!! BECAUSE F*** YOU THAT&rsquo;S WHY !!!!</p>
+
+<!-- more -->
+
+
+<p>Why doing it the easy way when hard way is more fun !!!!!!!</p>
+
+<p>First we need to distinguish tests on language level.
+Easiest way is to keep them in dedicated folders</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'>  <span class="o">/</span><span class="n">src</span><span class="o">/</span><span class="n">test</span><span class="o">/</span><span class="n">java</span><span class="o">/</span>
+</span><span class='line'>  <span class="o">/</span><span class="n">src</span><span class="o">/</span><span class="n">test</span><span class="o">/</span><span class="n">groovy</span><span class="o">/</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Now we need to distinguish tests by level and framework, best way is to do this by using suffixes and prefixes on classes.</p>
+
+<p>HINT!!
+Since Spock tests are handled by JUnit runner class you can treat those equally. What more&hellip; dividing tests based on framework will be done on Maven level so all we need to do is distinguish tests based on when they should be triggered within maven build lifecycle. Personally I like below convention.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'>  <span class="n">SampleClassNameTest</span><span class="o">.</span><span class="na">java</span>      <span class="o">&lt;-</span>  <span class="n">Java</span> <span class="n">Unit</span> <span class="n">Tests</span>
+</span><span class='line'>  <span class="n">SampleClassNameIT</span><span class="o">.</span><span class="na">java</span>        <span class="o">&lt;-</span>  <span class="n">Java</span> <span class="n">Integration</span> <span class="n">Tests</span>
+</span><span class='line'>  <span class="n">SampleClassNameTest</span><span class="o">.</span><span class="na">groovy</span>    <span class="o">&lt;-</span>  <span class="n">Groovy</span> <span class="n">Unit</span> <span class="n">Tests</span>
+</span><span class='line'>  <span class="n">SampleClassNameSpec</span><span class="o">.</span><span class="na">groovy</span>    <span class="o">&lt;-</span>  <span class="n">Groovy</span> <span class="n">Integration</span> <span class="n">Tests</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Be careful with class names, since Groovy classes are compiled to same .class as Java classes and land in the same target location make sure you don&rsquo;t have same classes in Java and Groovy locations (if they are in different packages then it&rsquo;s fine). But most of IDE&rsquo;s will prompt you if such situation occurs.</p>
+
+<p>And now last and simplest part of this setup&hellip; pom.xml</p>
+
+<p>Hah, just kidding, this is the most tricky part.
+But this will come in separate post in a few days.</p>
+]]></content>
+  </entry>
   
 </feed>
